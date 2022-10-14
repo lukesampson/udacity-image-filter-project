@@ -38,14 +38,15 @@ import fs from 'fs';
       res.status(400).send('image_url is not a valid URL.');
     }
 
-    const filteredPath = await filterImageFromURL(imageUrl);
-    res.sendFile(filteredPath, (err) => {
-      // Delete the file from the server after it's been sent.
-      fs.unlink(filteredPath, (err) => { });
-    });
-
-    
-
+    try {
+      const filteredPath = await filterImageFromURL(imageUrl);
+      res.sendFile(filteredPath, (err) => {
+        // Delete the file from the server after it's been sent.
+        fs.unlink(filteredPath, (err) => { });
+      })
+    } catch(error) {
+      res.status(422).send('Error processing image: ' + error);
+    }
   })
 
   //! END @TODO1
